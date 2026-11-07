@@ -40,11 +40,21 @@ const previewStyles = `<style>
     --preview-scrollbar-track: #ededed;
     --preview-scrollbar-thumb: #535353;
     --preview-scrollbar-hover: #3d3d3d;
+    --preview-toc-glass: rgba(255, 255, 255, .68);
+    --preview-toc-border: rgba(255, 255, 255, .78);
+    --preview-toc-shadow: 0 8px 28px rgba(24, 36, 54, .13), 0 1px 4px rgba(24, 36, 54, .08);
+    --preview-toc-text: #263445;
+    --preview-toc-hover: rgba(42, 60, 83, .09);
   }
   :root[data-preview-scrollbar-theme="dark"] {
     --preview-scrollbar-track: #30343a;
     --preview-scrollbar-thumb: #969ba1;
     --preview-scrollbar-hover: #b2b7bd;
+    --preview-toc-glass: rgba(32, 38, 47, .72);
+    --preview-toc-border: rgba(255, 255, 255, .16);
+    --preview-toc-shadow: 0 8px 28px rgba(0, 0, 0, .32), 0 1px 4px rgba(0, 0, 0, .18);
+    --preview-toc-text: #e7edf5;
+    --preview-toc-hover: rgba(255, 255, 255, .1);
   }
   @media (forced-colors: none) {
     :is(html, body, body .markdown-preview, body .markdown-preview *)::-webkit-scrollbar {
@@ -87,13 +97,64 @@ const previewStyles = `<style>
   .contexify svg[role="presentation"] { width: .8rem !important; height: .8rem !important; }
   .contexify svg.mr-2 { margin-right: .3333rem; }
   .contexify_rightSlot svg { width: .75rem; height: .75rem; }
+  body.preview-container.show-sidebar-toc .md-sidebar-toc {
+    zoom: var(--preview-controls-zoom, 1);
+    top: 46px;
+    right: 12px;
+    height: auto;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 88px);
+    overflow: hidden;
+    border: 1px solid var(--preview-toc-border);
+    border-radius: 16px;
+    color: var(--preview-toc-text);
+    background-color: var(--preview-toc-glass) !important;
+    box-shadow: var(--preview-toc-shadow);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    transition: top 300ms ease, max-height 300ms ease;
+  }
+  body.preview-container.show-sidebar-toc .md-sidebar-toc .md-sidebar-toc-content {
+    min-width: 0;
+    padding: 12px 10px 14px 4px;
+  }
+  body.preview-container.show-sidebar-toc .md-sidebar-toc a {
+    color: inherit;
+    border-radius: 5px;
+  }
+  body.preview-container.show-sidebar-toc .md-sidebar-toc a:hover,
+  body.preview-container.show-sidebar-toc .md-sidebar-toc a:focus-visible {
+    background-color: var(--preview-toc-hover);
+  }
   body.preview-container:not([data-presentation-mode]) .crossnote[data-for="preview"] { padding-top: calc(2em + 30px); }
+  @media (min-width: 601px) {
+    body.preview-container.show-sidebar-toc:not([data-presentation-mode]) .crossnote[data-for="preview"] {
+      width: calc(100% - (var(--sidebar-toc-width, 280px) + 12px) * var(--preview-controls-zoom, 1));
+    }
+    body.preview-container.show-sidebar-toc:not([data-presentation-mode]) .crossnote.markdown-preview:not([data-for="preview"]) {
+      width: calc(100% - var(--sidebar-toc-width, 280px) - 12px);
+    }
+  }
   @media (max-width: 600px) {
     body.preview-container:not([data-presentation-mode]) .crossnote[data-for="preview"] { padding-top: calc(2em + 68px); }
     body .topbar { transition: top 300ms ease; }
     body[data-host-toolbar="visible"] .topbar { top: 54px; }
+    body.preview-container.show-sidebar-toc .crossnote { width: 100%; }
+    body.preview-container.show-sidebar-toc[data-host-toolbar="visible"] .md-sidebar-toc {
+      top: 100px;
+      max-height: calc(100vh - 142px);
+    }
   }
-  @media (prefers-reduced-motion: reduce) { body .topbar { transition: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    body .topbar, body.preview-container.show-sidebar-toc .md-sidebar-toc { transition: none; }
+  }
+  @media (forced-colors: active) {
+    body.preview-container.show-sidebar-toc .md-sidebar-toc {
+      border-color: CanvasText;
+      color: CanvasText;
+      background-color: Canvas !important;
+    }
+  }
   @media print { body.preview-container:not([data-presentation-mode]) .crossnote[data-for="preview"] { padding-top: 2em; } }
 </style>`;
 
@@ -113,6 +174,15 @@ function bindToolbarScroll() {
   detachToolbarScroll?.();
   toolbarDocument = doc;
   setToolbarVisible(true);
+  // Crossnote counter-scales its fixed controls when the preview zoom changes.
+  // Apply the same scale to the directory so it stays below the top buttons.
+  const syncControlsZoom = () => {
+    const zoom = Number.parseFloat(doc.body.style.zoom);
+    doc.documentElement.style.setProperty('--preview-controls-zoom', String(zoom > 0 ? 1 / zoom : 1));
+  };
+  const zoomObserver = new MutationObserver(syncControlsZoom);
+  zoomObserver.observe(doc.body, { attributes: true, attributeFilter: ['style'] });
+  syncControlsZoom();
   let previous = Math.max(0, win.scrollY);
   let direction = 0;
   let distance = 0;
@@ -147,6 +217,7 @@ function bindToolbarScroll() {
   detachToolbarScroll = () => {
     win.removeEventListener('scroll', onScroll);
     doc.removeEventListener('keydown', onKeyDown, true);
+    zoomObserver.disconnect();
   };
 }
 

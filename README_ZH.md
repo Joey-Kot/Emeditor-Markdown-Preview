@@ -4,6 +4,8 @@
 
 一个使用 WebView2 的 EmEditor Markdown 侧栏插件。渲染核心采用 [Crossnote](https://github.com/shd101wyy/crossnote)，它也是 [Markdown Preview Enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced) 使用的核心。运行插件时不需要安装 Node.js。
 
+![EmEditor 中的 Markdown 预览](docs/Demo.png)
+
 ## 下载
 
 | 平台 | 下载 | SHA-256 |

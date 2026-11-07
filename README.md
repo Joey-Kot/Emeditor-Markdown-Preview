@@ -4,6 +4,8 @@ English | [简体中文](README_ZH.md)
 
 An EmEditor Markdown sidebar plugin that uses WebView2. Its rendering core is [Crossnote](https://github.com/shd101wyy/crossnote), which is also used by [Markdown Preview Enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced). Node.js is not required to run the plugin.
 
+![Markdown Preview in EmEditor](docs/Demo.png)
+
 ## Downloads
 
 | Platform | Download | SHA-256 |
