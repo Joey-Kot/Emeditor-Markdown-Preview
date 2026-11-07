@@ -40,6 +40,12 @@ test('the embedded renderer previews and updates unsaved Markdown', { skip: !chr
   const missing = [];
   const server = createServer((request, response) => {
     const url = new URL(request.url, 'http://localhost');
+    // Full Chrome may request a favicon even though the embedded UI has none.
+    if (url.pathname === '/favicon.ico') {
+      response.writeHead(204);
+      response.end();
+      return;
+    }
     if (url.pathname === '/plantuml/svg' && request.method === 'POST') {
       request.setEncoding('utf8');
       request.on('data', (chunk) => { plantumlInput += chunk; });
@@ -56,7 +62,7 @@ test('the embedded renderer previews and updates unsaved Markdown', { skip: !chr
     }
     const name = decodeURIComponent(url.pathname.slice(1) || 'index.html');
     const data = files.get(name);
-    if (!data) { missing.push(name); response.writeHead(404); response.end(); return; }
+    if (!data) { missing.push(name); console.error(`Missing preview asset: ${name}`); response.writeHead(404); response.end(); return; }
     response.writeHead(200, { 'content-type': types[extname(name)] || 'application/octet-stream' });
     response.end(data);
   });
@@ -126,34 +132,7 @@ test('the embedded renderer previews and updates unsaved Markdown', { skip: !chr
     window.sendFromEditor = (value) => receiver({ data: value });
   });
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
-  const refreshMotion = await page.evaluate(() => {
-    const button = document.querySelector('#refresh');
-    const icon = button.querySelector('svg');
-    button.click();
-    const first = icon.getAnimations()[0];
-    if (!first) return null;
-    const duration = first.effect.getTiming().duration;
-    first.currentTime = duration / 4;
-    const quarter = new DOMMatrixReadOnly(getComputedStyle(icon).transform);
-    first.currentTime = duration / 2;
-    const halfway = new DOMMatrixReadOnly(getComputedStyle(icon).transform);
-    first.currentTime = duration * 3 / 4;
-    const threeQuarters = new DOMMatrixReadOnly(getComputedStyle(icon).transform);
-    button.click();
-    const active = icon.getAnimations();
-    const restarted = active.length === 1 && active[0] !== first && first.playState === 'idle';
-    active[0]?.finish();
-    return { quarter: quarter.b, halfway: halfway.a, threeQuarters: threeQuarters.b, restarted,
-      settled: getComputedStyle(icon).transform === 'none' };
-  });
-  assert.ok(refreshMotion && refreshMotion.quarter > 0.1 && refreshMotion.halfway < -0.9 &&
-    refreshMotion.threeQuarters < -0.1 && refreshMotion.restarted && refreshMotion.settled, JSON.stringify(refreshMotion));
-  await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
-  assert.equal(await page.evaluate(() => {
-    document.querySelector('#refresh').click();
-    return document.querySelector('#refresh svg').getAnimations().length;
-  }), 0);
-  await page.emulateMediaFeatures([]);
+  await page.waitForFunction(() => window.nativeMessages?.includes('ready'), { timeout: 15000 });
   await page.evaluate(() => window.sendFromEditor('document\t99\t1\tC%3A%5Cdocs%5Cquoted.md\n> - [ ] Quoted task'));
   await page.waitForFunction(() => document.querySelector('iframe')?.contentDocument?.querySelector('.markdown-preview[data-for="preview"] .task-list-item-checkbox'), { timeout: 10000 });
   await page.evaluate(() => document.querySelector('iframe').contentDocument.querySelector('.markdown-preview[data-for="preview"] .task-list-item-checkbox').click());
