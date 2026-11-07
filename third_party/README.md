@@ -6,4 +6,4 @@
 - `html-to-image` 1.11.13: MIT, installed from the pinned npm lockfile.
 - Crossnote's vendored browser assets include Font Awesome Free 6.4.2, WaveDrom 3.3.0, Reveal.js 4.6.0, Vega 5.25.0, Vega-Lite 5.16.1 and Vega-Embed 6.23.0. Their license texts are in [vendor-licenses](vendor-licenses/). Crossnote also bundles fonts with their own license files, including Source Sans Pro.
 
-At build time, the license texts above and the license files from installed npm packages are embedded in the DLL and written to `build/assets/THIRD-PARTY-NOTICES.txt`. GitHub releases also include the notices as a separate file. See `package-lock.json` for the exact npm dependency versions and Crossnote's `out/dependencies/README.md` for its vendored browser assets.
+At build time, the license texts above and the license files from installed npm packages are embedded in the DLL. See `package-lock.json` for the exact npm dependency versions and Crossnote's `out/dependencies/README.md` for its vendored browser assets.

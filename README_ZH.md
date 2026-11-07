@@ -4,10 +4,17 @@
 
 一个使用 WebView2 的 EmEditor Markdown 侧栏插件。渲染核心采用 [Crossnote](https://github.com/shd101wyy/crossnote)，它也是 [Markdown Preview Enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced) 使用的核心。运行插件时不需要安装 Node.js。
 
+## 下载
+
+| 平台 | 下载 | SHA-256 |
+| --- | --- | --- |
+| Windows x64 | [Markdown-Preview-x64.zip](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x64.zip) | [sha256](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x64.zip.sha256) |
+| Windows x86 | [Markdown-Preview-x86.zip](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x86.zip) | [sha256](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x86.zip.sha256) |
+
 ## 安装和使用
 
 1. 确保安装了 [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)；请使用与 EmEditor 位数一致的 DLL。
-2. 将 `MarkdownPreview.dll` 放到 EmEditor 的 `PlugIns` 文件夹，例如 `%LOCALAPPDATA%\Programs\EmEditor\PlugIns`。也可以在 EmEditor 的“工具 → 插件 → 自定义插件”中添加 DLL。
+2. 从下载的 ZIP 中解压 `MarkdownPreview.dll`，放到 EmEditor 的 `PlugIns` 文件夹，例如 `%LOCALAPPDATA%\Programs\EmEditor\PlugIns`。也可以在 EmEditor 的“工具 → 插件 → 自定义插件”中添加 DLL。
 3. 打开 Markdown 文档，从插件菜单或插件工具栏启动 **Markdown Preview**；再次运行可关闭预览。
 
 侧栏的悬浮工具栏提供刷新、HTML、PDF、PNG、JPEG 导出按钮；向下滚动时自动收起，向上滚动或返回顶部时重新显示。预览内右键可选择主题和其他上游菜单功能。普通 Markdown、KaTeX、Mermaid、Graphviz、WaveDrom 和 Vega-Lite 使用本地渲染资源。
@@ -45,4 +52,4 @@ npm test
 
 ## 许可
 
-本项目新增代码采用 [MIT License](LICENSE)。Crossnote、EmEditor SDK、WebView2 Loader 及其他第三方组件分别遵循各自的许可，详见 [NOTICE](NOTICE) 和 [third_party](third_party/README.md)。构建产物中的 `THIRD-PARTY-NOTICES.txt` 包含第三方许可声明，也会作为独立文件随 GitHub 发布。
+本项目采用 [MIT License](LICENSE)。Crossnote、EmEditor SDK、WebView2 Loader 及其他第三方组件分别遵循各自的许可，详见 [NOTICE](NOTICE) 和 [third_party](third_party/README.md)。第三方许可声明已嵌入 DLL。

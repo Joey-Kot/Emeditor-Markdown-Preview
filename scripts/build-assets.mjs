@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const modules = resolve(process.env.MARKDOWN_PREVIEW_NODE_MODULES || join(root, 'node_modules'));
@@ -212,7 +212,7 @@ async function packageNotices(directory) {
 }
 await packageNotices(modules);
 const noticesText = Buffer.from(notices.join('\n'), 'utf8');
-await writeFile(join(output, 'THIRD-PARTY-NOTICES.txt'), noticesText);
+await rm(join(output, 'THIRD-PARTY-NOTICES.txt'), { force: true });
 entries.push(['notices.txt', noticesText]);
 async function collect(directory, prefix) {
   for (const item of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {

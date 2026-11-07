@@ -4,10 +4,17 @@ English | [简体中文](README_ZH.md)
 
 An EmEditor Markdown sidebar plugin that uses WebView2. Its rendering core is [Crossnote](https://github.com/shd101wyy/crossnote), which is also used by [Markdown Preview Enhanced](https://github.com/shd101wyy/vscode-markdown-preview-enhanced). Node.js is not required to run the plugin.
 
+## Downloads
+
+| Platform | Download | SHA-256 |
+| --- | --- | --- |
+| Windows x64 | [Markdown-Preview-x64.zip](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x64.zip) | [sha256](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x64.zip.sha256) |
+| Windows x86 | [Markdown-Preview-x86.zip](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x86.zip) | [sha256](https://github.com/Joey-Kot/Emeditor-Markdown-Preview/releases/download/Latest/Markdown-Preview-x86.zip.sha256) |
+
 ## Installation and Usage
 
 1. Make sure [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) is installed; use the DLL that matches your EmEditor architecture.
-2. Place `MarkdownPreview.dll` in EmEditor’s `PlugIns` folder, for example, `%LOCALAPPDATA%\Programs\EmEditor\PlugIns`. You can also add the DLL in EmEditor under “Tools → Plug-ins → Customize Plug-ins.”
+2. Extract `MarkdownPreview.dll` from the downloaded ZIP and place it in EmEditor’s `PlugIns` folder, for example, `%LOCALAPPDATA%\Programs\EmEditor\PlugIns`. You can also add the DLL in EmEditor under “Tools → Plug-ins → Customize Plug-ins.”
 3. Open a Markdown document and launch **Markdown Preview** from the plug-in menu or plug-in toolbar; run it again to close the preview.
 
 The sidebar’s floating toolbar provides buttons to refresh and export to HTML, PDF, PNG, and JPEG. It automatically collapses when you scroll down and reappears when you scroll up or return to the top. Right-click in the preview to select a theme and access other upstream menu features. Standard Markdown, KaTeX, Mermaid, Graphviz, WaveDrom, and Vega-Lite use local rendering resources.
@@ -45,4 +52,4 @@ npm test
 
 ## License
 
-New code in this project is licensed under the [MIT License](LICENSE). Crossnote, the EmEditor SDK, the WebView2 Loader, and other third-party components are subject to their respective licenses; see [NOTICE](NOTICE) and [third_party](third_party/README.md) for details. `THIRD-PARTY-NOTICES.txt` in the build output contains third-party license notices and is also distributed as a separate file with GitHub releases.
+This project is licensed under the [MIT License](LICENSE). Crossnote, the EmEditor SDK, the WebView2 Loader, and other third-party components are subject to their respective licenses; see [NOTICE](NOTICE) and [third_party](third_party/README.md) for details. Third-party license notices are embedded in the DLL.
