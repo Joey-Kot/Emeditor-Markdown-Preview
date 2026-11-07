@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://tikzjax.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://tikzjax.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https: http:; font-src 'self' data: https://tikzjax.com https://cdn.jsdelivr.net; connect-src 'self' https: http:; frame-src 'self' about: blob:; worker-src 'self' blob:;">
+  <title>Markdown Preview</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { background: #fff; color: #24292f; font: 14px system-ui, sans-serif; }
+    #toolbar {
+      --glass: rgba(255, 255, 255, .68);
+      --glass-border: rgba(255, 255, 255, .78);
+      --glass-shadow: 0 8px 28px rgba(24, 36, 54, .13), 0 1px 4px rgba(24, 36, 54, .08);
+      --button-hover: rgba(42, 60, 83, .09);
+      position: absolute; z-index: 10; top: 10px; left: 50%;
+      width: min(332px, calc(100% - 20px)); height: 40px; box-sizing: border-box;
+      padding: 4px; overflow: hidden; border: 1px solid var(--glass-border); border-radius: 999px;
+      color: #263445; background: var(--glass); box-shadow: var(--glass-shadow);
+      -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+      transform: translateX(-50%) scale(1); opacity: 1; visibility: visible;
+      transition: width 320ms cubic-bezier(.22,.75,.25,1), transform 240ms ease,
+        opacity 180ms ease 60ms, visibility 0s;
+    }
+    #toolbar.is-collapsed {
+      width: 40px; opacity: 0; visibility: hidden; pointer-events: none;
+      transform: translateX(-50%) scale(.45);
+      transition: width 300ms cubic-bezier(.55,0,.8,.3), transform 240ms ease 90ms,
+        opacity 170ms ease 150ms, visibility 0s linear 320ms;
+    }
+    #toolbar .toolbar-content { display: flex; align-items: center; gap: 2px; width: 100%; height: 100%; opacity: 1; transition: opacity 160ms ease 100ms; }
+    #toolbar.is-collapsed .toolbar-content { opacity: 0; transition: opacity 110ms ease; }
+    #toolbar button {
+      flex: 1 1 0; min-width: 0; height: 30px; padding: 0 3px; border: 0; border-radius: 999px;
+      color: inherit; background: transparent; cursor: pointer; font: 600 clamp(9px, 3.4vw, 12px)/1 system-ui, sans-serif;
+      white-space: nowrap; transition: background-color 160ms ease, color 160ms ease;
+    }
+    #toolbar button:hover, #toolbar button:focus-visible { background: var(--button-hover); }
+    #toolbar button:focus-visible { outline: 2px solid #5185c7; outline-offset: -2px; }
+    #toolbar #refresh { flex: .8 1 0; display: grid; place-items: center; }
+    #toolbar #refresh svg { width: 17px; height: 17px; transform-origin: center; }
+    #toolbar #online { flex: 1.45 1 0; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    #toolbar .online-dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: #a5aeb8; }
+    #toolbar #online[aria-pressed="true"] .online-dot { background: #24a572; box-shadow: 0 0 0 3px rgba(36, 165, 114, .14); }
+    #toolbar .divider { flex: none; width: 1px; height: 16px; margin: 0 2px; background: currentColor; opacity: .14; }
+    body[data-preview-tone="dark"] #toolbar {
+      --glass: rgba(32, 38, 47, .72); --glass-border: rgba(255, 255, 255, .16);
+      --glass-shadow: 0 8px 28px rgba(0, 0, 0, .32), 0 1px 4px rgba(0, 0, 0, .18);
+      --button-hover: rgba(255, 255, 255, .1); color: #e7edf5;
+    }
+    #message { padding: 70px 1rem 1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    #preview { display: none; width: 100%; height: 100%; border: 0; }
+    @media (max-width: 260px) { #toolbar .toolbar-content { gap: 1px; } #toolbar button { padding: 0 1px; } #toolbar #online { gap: 0; } #toolbar .online-dot { display: none; } #toolbar .divider { margin: 0 1px; } }
+    @media print { #toolbar { display: none; } html, body { height: auto; overflow: visible; } #preview { height: auto; } }
+    @media (prefers-color-scheme: dark) { body { background: #0d1117; color: #e6edf3; } }
+    @media (prefers-reduced-motion: reduce) { #toolbar, #toolbar .toolbar-content, #toolbar button { transition: none !important; } }
+    @media (forced-colors: active) { #toolbar { border: 1px solid CanvasText; background: Canvas; color: CanvasText; } }
+  </style>
+</head>
+<body>
+  <div id="toolbar" role="toolbar" aria-label="Markdown Preview">
+    <div class="toolbar-content">
+      <button id="refresh" type="button" title="Refresh preview" aria-label="Refresh preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10a8 8 0 0 1 13.7-4L20 8"/><path d="M20 4v4h-4"/><path d="M20 14a8 8 0 0 1-13.7 4L4 16"/><path d="M4 20v-4h4"/></svg></button>
+      <span class="divider" aria-hidden="true"></span>
+      <button id="export-html" type="button" title="Export HTML">HTML</button>
+      <button id="export-pdf" type="button" title="Export PDF">PDF</button>
+      <button id="export-png" type="button" title="Export PNG">PNG</button>
+      <button id="export-jpeg" type="button" title="Export JPEG">JPG</button>
+      <span class="divider" aria-hidden="true"></span>
+      <button id="online" type="button" title="Allow online TikZ and ZenUML resources" aria-pressed="false"><span class="online-dot" aria-hidden="true"></span>Online</button>
+    </div>
+  </div>
+  <div id="message">Loading Markdown Preview…</div>
+  <iframe id="preview" title="Markdown Preview" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals"></iframe>
+  <script src="/engine.js"></script>
+</body>
+</html>

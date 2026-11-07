@@ -1,0 +1,12 @@
+/node_modules/
+/build/
+/dist/
+/.cache/
+*.user
+*.suo
+*.pdb
+*.obj
+*.ilk
+*.exp
+*.lib
+.DS_Store

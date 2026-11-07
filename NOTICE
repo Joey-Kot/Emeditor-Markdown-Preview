@@ -1,0 +1,12 @@
+Markdown Preview for EmEditor
+
+This project uses Crossnote, the rendering core of Markdown Preview Enhanced.
+Crossnote and Markdown Preview Enhanced are licensed under the University of
+Illinois/NCSA Open Source License. Their copyright and license notices are in
+third_party/. The EmEditor plug-in API header is licensed under MIT by
+Emurasoft, Inc. The WebView2 loader is redistributed under Microsoft's license.
+
+Crossnote includes additional vendored assets. Their notices are included in
+third_party/vendor-licenses/ and in the build's THIRD-PARTY-NOTICES.txt. The
+build also includes package notices from the locked npm dependencies. See
+third_party/README.md for versions and provenance.
